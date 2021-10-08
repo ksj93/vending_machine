@@ -62,6 +62,7 @@ class VendingMachine
       return start_buy
     elsif select_menu == 4
       puts "次も利用してください！"
+      return_money
     else
       puts "番号を押してください！"
       return start_buy
@@ -118,6 +119,7 @@ class VendingMachine
     if select_drink == 1
       if @slot_money>@drink[:cola]
         @slot_money=@slot_money-@drink[:cola]
+        @cola_stock = @cola_stock -1
         puts "コーラの値段:#{@drink[:cola]}円"
         puts "お釣りは#{@slot_money}円です。"
       else
@@ -126,6 +128,7 @@ class VendingMachine
     elsif select_drink == 2
       if @slot_money>@drink[:juice]
         @slot_money=@slot_money-@drink[:juice]
+        @juice_stock = @juice_stock -1
         puts "コーラの値段:#{@drink[:juice]}円"
         puts "お釣りは#{@slot_money}円です。"
       else
@@ -134,6 +137,7 @@ class VendingMachine
     elsif select_drink == 3
       if @slot_money>@drink[:water]
         @slot_money=@slot_money-@drink[:water]
+        @water_stock = @water_stock -1
         puts "コーラの値段:#{@drink[:juice]}円"
         puts "お釣りは#{@slot_money}円です。"
       else
