@@ -29,6 +29,7 @@ class VendingMachine
   def initialize
     # 最初の自動販売機に入っている金額は0円
     @slot_money = 0
+    @sales_money = 0
     @cola_stock = 5
     @juice_stock = 3
     @water_stock = 2
@@ -36,11 +37,15 @@ class VendingMachine
   end
 
   # 投入金額の総計を取得できる。
-  def start_buy
+  def start
     puts "-"*15
     puts "自販機です。"
     puts "行いたい行動に該当する番号を押してください。"
     puts "現在#{@slot_money}円が入ってます。"
+    puts "-"*15
+    puts "購入可能な飲み物" + ("-"*4)
+    puts "-"*15
+    confirm_slot_money
     puts "-"*15
     puts "1 お金を投入する"
     puts "2 飲み物を買う"
@@ -52,20 +57,19 @@ class VendingMachine
       puts "投入可能金額:10,50,100,500,1000円"
       insert_coin = gets.to_i
       slot_money(insert_coin)
-      return start_buy
+      return start
     elsif select_menu == 2
       buy_item_calculate
-      return start_buy
+      return start
     elsif select_menu == 3
       drink_stock
-      confirm_slot_money
-      return start_buy
+      return start
     elsif select_menu == 4
       puts "次も利用してください！"
       return_money
     else
       puts "番号を押してください！"
-      return start_buy
+      return start
     end
   end
   # def current_slot_money
@@ -85,6 +89,7 @@ class VendingMachine
     end
   end
   def drink_stock
+    puts "現在の売上金額:#{@sales_money}円"
     puts "コーラ　在庫:#{@cola_stock} 個　値段:#{@drink[:cola]} 円"
     puts "ジュース　在庫:#{@juice_stock} 個　値段:#{@drink[:juice]} 円"
     puts "水　在庫:#{@water_stock} 個　値段:#{@drink[:water]} 円"
@@ -93,9 +98,9 @@ class VendingMachine
     puts "現在の投入金額:#{@slot_money}円"
     @drink.each do |key,value|
       if @slot_money>value
-        puts "#{key}が購入できます。"
+        puts "#{key}が購入可能"
       else
-        puts "#{key}は購入できません。"
+        puts "#{key}は購入不可能"
       end
     end
   end
@@ -112,15 +117,16 @@ class VendingMachine
 
   def buy_item_calculate
     puts "現在の投入金額:#{@slot_money}"
-    puts "1:コーラ"
-    puts "2:ジュース"
-    puts "3:水"
+    puts "1:コーラ #{@drink[:cola]}円"
+    puts "2:ジュース #{@drink[:juice]}円"
+    puts "3:水 #{@drink[:juice]}円"
+    puts "4:前に戻る"
     select_drink = gets.to_i
     if select_drink == 1
       if @slot_money>@drink[:cola]
         @slot_money=@slot_money-@drink[:cola]
         @cola_stock = @cola_stock -1
-        puts "コーラの値段:#{@drink[:cola]}円"
+        @sales_money = @sales_money + @drink[:cola]
         puts "お釣りは#{@slot_money}円です。"
       else
         puts "金額が足りません！"
@@ -129,7 +135,7 @@ class VendingMachine
       if @slot_money>@drink[:juice]
         @slot_money=@slot_money-@drink[:juice]
         @juice_stock = @juice_stock -1
-        puts "コーラの値段:#{@drink[:juice]}円"
+        @sales_money = @sales_money + @drink[:juice]
         puts "お釣りは#{@slot_money}円です。"
       else
         puts "金額が足りません！"
@@ -138,11 +144,13 @@ class VendingMachine
       if @slot_money>@drink[:water]
         @slot_money=@slot_money-@drink[:water]
         @water_stock = @water_stock -1
-        puts "コーラの値段:#{@drink[:juice]}円"
+        @sales_money = @sales_money + @drink[:water]
         puts "お釣りは#{@slot_money}円です。"
       else
         puts "金額が足りません！"
       end
+    elsif select_drink == 4
+        return start
     else
       puts "ボタンを押して下さい"
     end
