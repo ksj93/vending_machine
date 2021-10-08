@@ -41,7 +41,6 @@ class VendingMachine
     puts "-"*15
     puts "自販機です。"
     puts "行いたい行動に該当する番号を押してください。"
-    puts "現在#{@slot_money}円が入ってます。"
     puts "-"*15
     puts "購入可能な飲み物" + ("-"*4)
     puts "-"*15
