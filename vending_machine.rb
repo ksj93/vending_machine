@@ -32,6 +32,7 @@ class VendingMachine
     @sales_money = 0
     @drink = {cola:150,juice:180,water:100}
     @drink_stock ={cola:5,juice:3,water:2}
+    @drink_jp ={cola:5,juice:3,water:2}
   end
 
   # 投入金額の総計を取得できる。
@@ -87,6 +88,7 @@ class VendingMachine
   end
   def drink_stock
     puts "現在の売上金額:#{@sales_money}円"
+  
     puts "コーラ　在庫:#{@drink_stock[:cola]} 個　値段:#{@drink[:cola]} 円"
     puts "ジュース　在庫:#{@drink_stock[:juice]} 個　値段:#{@drink[:juice]} 円"
     puts "水　在庫:#{@drink_stock[:water]} 個　値段:#{@drink[:water]} 円"
