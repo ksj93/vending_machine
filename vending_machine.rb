@@ -95,16 +95,25 @@ class VendingMachine
   def confirm_slot_money
     puts "現在の投入金額:#{@slot_money}円"
     @drink.each do |key,value|
-      if @slot_money>value
-        @drink_stock.each do |stock_key,stock_value|
-          if key == stock_key && stock_value > 0
-            puts "#{key}が購入可能"
-          else
-            puts "#{key}は購入不可能"
-          end
-        end
+      if @slot_money>=@drink[key] && @drink_stock[key] >0
+        puts "#{key}が購入可能"
+      else
+        puts "#{key}は購入不可能"
       end
     end
+
+
+
+
+    # @drink.each do |key,value|
+    #     @drink_stock.each do |stock_key,stock_value|
+    #       if key == stock_key && stock_value > 0 &&  @slot_money > value
+    #         puts "#{key}が購入可能"
+    #       else
+    #         puts "#{key}は購入不可能"
+    #       end
+    #     end
+    # end
   end
   # def buy_item
   #   puts "行動を選択してください"
