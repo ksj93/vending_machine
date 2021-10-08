@@ -30,10 +30,8 @@ class VendingMachine
     # 最初の自動販売機に入っている金額は0円
     @slot_money = 0
     @sales_money = 0
-    @cola_stock = 5
-    @juice_stock = 3
-    @water_stock = 2
     @drink = {cola:150,juice:180,water:100}
+    @drink_stock ={cola:5,juice:3,water:2}
   end
 
   # 投入金額の総計を取得できる。
@@ -89,17 +87,22 @@ class VendingMachine
   end
   def drink_stock
     puts "現在の売上金額:#{@sales_money}円"
-    puts "コーラ　在庫:#{@cola_stock} 個　値段:#{@drink[:cola]} 円"
-    puts "ジュース　在庫:#{@juice_stock} 個　値段:#{@drink[:juice]} 円"
-    puts "水　在庫:#{@water_stock} 個　値段:#{@drink[:water]} 円"
+    puts "コーラ　在庫:#{@drink_stock[:cola]} 個　値段:#{@drink[:cola]} 円"
+    puts "ジュース　在庫:#{@drink_stock[:juice]} 個　値段:#{@drink[:juice]} 円"
+    puts "水　在庫:#{@drink_stock[:water]} 個　値段:#{@drink[:water]} 円"
   end
+
   def confirm_slot_money
     puts "現在の投入金額:#{@slot_money}円"
     @drink.each do |key,value|
       if @slot_money>value
-        puts "#{key}が購入可能"
-      else
-        puts "#{key}は購入不可能"
+        @drink_stock.each do |stock_key,stock_value|
+          if key == stock_key && stock_value > 0
+            puts "#{key}が購入可能"
+          else
+            puts "#{key}は購入不可能"
+          end
+        end
       end
     end
   end
@@ -122,27 +125,27 @@ class VendingMachine
     puts "4:前に戻る"
     select_drink = gets.to_i
     if select_drink == 1
-      if @slot_money>@drink[:cola] && @cola_stock > 0
+      if @slot_money>=@drink[:cola] && @drink_stock[:cola] > 0
         @slot_money=@slot_money-@drink[:cola]
-        @cola_stock = @cola_stock -1
+        @drink_stock[:cola] = @drink_stock[:cola]  -1
         @sales_money = @sales_money + @drink[:cola]
         puts "お釣りは#{@slot_money}円です。"
       else
         puts "購入出来ません！"
       end
-    elsif select_drink == 2 &&  @juice_stock > 0
-      if @slot_money>@drink[:juice]
+    elsif select_drink == 2
+      if @slot_money>=@drink[:juice] &&  @drink_stock[:juice] > 0
         @slot_money=@slot_money-@drink[:juice]
-        @juice_stock = @juice_stock -1
+        @drink_stock[:juice] = @drink_stock[:juice]  -1
         @sales_money = @sales_money + @drink[:juice]
         puts "お釣りは#{@slot_money}円です。"
       else
         puts "購入出来ません！"
       end
-    elsif select_drink == 3 && @water_stock > 0
-      if @slot_money>@drink[:water]
+    elsif select_drink == 3
+      if @slot_money>=@drink[:water] && @drink_stock[:water] > 0
         @slot_money=@slot_money-@drink[:water]
-        @water_stock = @water_stock -1
+        @drink_stock[:water]= @drink_stock[:water] -1
         @sales_money = @sales_money + @drink[:water]
         puts "お釣りは#{@slot_money}円です。"
       else
@@ -159,11 +162,8 @@ class VendingMachine
   # 払い戻し操作を行うと、投入金額の総計を釣り銭として出力する。
   def return_money
     # 返すお金の金額を表示する
-    puts @slot_money
+    puts "#{@slot_money}円を返します。"
     # 自動販売機に入っているお金を0円に戻す
     @slot_money = 0
   end
-
-
-
 end
