@@ -88,17 +88,26 @@ class VendingMachine
     puts "ジュース　在庫:#{@juice_stock} 個　値段:#{@drink[:juice]} 円"
     puts "水　在庫:#{@water_stock} 個　値段:#{@drink[:water]} 円"
   end
-
-  def buy_item
-    puts "行動を選択してください"
-    puts "1:購入　2:購入可能品目"
-    select = gets.to_i
-      if select == 1
-        buy_item_calculate
-      elsif select == 2
-        confirm_slot_money
+  def confirm_slot_money
+    puts "現在の投入金額:#{@slot_money}円"
+    @drink.each do |key,value|
+      if @slot_money>value
+        puts "#{key}が購入できます。"
+      else
+        puts "#{key}は購入できません。"
       end
+    end
   end
+  # def buy_item
+  #   puts "行動を選択してください"
+  #   puts "1:購入　2:購入可能品目"
+  #   select = gets.to_i
+  #     if select == 1
+  #       buy_item_calculate
+  #     elsif select == 2
+  #       confirm_slot_money
+  #     end
+  # end
 
   def buy_item_calculate
     puts "現在の投入金額:#{@slot_money}"
@@ -134,16 +143,7 @@ class VendingMachine
       puts "ボタンを押して下さい"
     end
   end
-  def confirm_slot_money
-    puts "現在の投入金額:#{@slot_money}円"
-    @drink.each do |key,value|
-      if @slot_money>value
-        puts "#{key}が購入できます。"
-      else
-        puts "#{key}は購入できません。"
-      end
-    end
-  end
+
 
   # 払い戻し操作を行うと、投入金額の総計を釣り銭として出力する。
   def return_money
