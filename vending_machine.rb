@@ -66,11 +66,17 @@ class VendingMachine
     @drink.each do |key,value|
       if @slot_money>=@drink[key] && @drink_stock[key] >0
         puts "#{key}が購入可能"
+      elsif @slot_money<@drink[key] && @drink_stock[key] >0
+        puts "#{key}は購入不可能[投入金額不足]"
+      elsif @slot_money>=@drink[key] && @drink_stock[key] ==0
+        puts "#{key}は購入不可能[在庫不足]"
       else
         puts "#{key}は購入不可能"
       end
     end
   end
+  # 購入不可能の場合、買えない理由を示す条件を追加(211009_kim)
+
 
   def buy_item_list
     i=0
@@ -79,26 +85,41 @@ class VendingMachine
       i +=1
       puts "#{i} #{value}　値段:#{@drink[key]} 円"
     end
-    puts "4:前に戻る"
+    puts "#{i+1}:前に戻る"
   end
   # buy_item_calculateで選択肢の部分を別のメソッドに分離(211008_kim)
 
   def buy_item_calculate
     buy_item_list
     select_drink = gets.to_i
-    if select_drink == 1
-      calculate_function(:cola)
-    elsif select_drink == 2
-      calculate_function(:juice)
-    elsif select_drink == 3
-      calculate_function(:water)
-    elsif select_drink == 4
-        return start
-    else
-      puts "ボタンを押して下さい"
+    i = 0
+    @drink_jp.each do |key,value|
+      i +=1
+      if select_drink == i
+        calculate_function(key)
+        puts "#{value}です！"
+      elsif select_drink>@drink_jp.size+1 || select_drink == 0
+        puts "ボタンを押して下さい"
+        return
+      end
     end
   end
+    # if select_drink == 1
+    #   calculate_function(:cola)
+    # elsif select_drink == 2
+    #   calculate_function(:juice)
+    # elsif select_drink == 3
+    #   calculate_function(:water)
+    # elsif select_drink == 4
+    #     return start
+    # else
+    #   puts "ボタンを押して下さい"
+    # end
+  # end
+
   # 選択に該当する処理が重複したのでkeyという引数を使うcalculate_functionに分離(211008_kim)
+  # 選択の部分をハッシュの繰り返しでiという変数に繰り返しを順序に番号つけて選択した数値と
+  # 一致する時calculate_function(key)を実施するように変更(211009_kim)
 
   def calculate_function(key)
     if @slot_money>=@drink[key] && @drink_stock[key] > 0
