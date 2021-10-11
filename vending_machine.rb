@@ -34,7 +34,6 @@ class Item_set
       collect_sales_money
       return maintenance
     elsif maintenance_select == 5
-      return
     elsif maintenance_select>5 || maintenance_select == 0
       puts "ボタンを押して下さい"
       return maintenance
@@ -73,9 +72,9 @@ class Item_set
 
   def add_item
     puts "売る飲み物の英名を入力してください"
-    key_insert = gets
+    key_insert = gets.chomp
     puts "売る飲み物の品名を入力してください"
-    drink_jp_title = gets
+    drink_jp_title = gets.chomp
     puts "売る飲み物の在庫を入力してください"
     drink_stock_number = gets.to_i
     puts "売る飲み物の値段を入力してください"
@@ -131,7 +130,7 @@ class Item_set
         return delete_item
       elsif select_del_drink == @drink_jp.size+1
         return delete_item
-      elsif sselect_del_drink>@drink_jp.size+1 || select_del_drink == 0
+      elsif select_del_drink > @drink_jp.size+1 || select_del_drink == 0
         puts "ボタンを押して下さい"
         return
       end
@@ -141,6 +140,7 @@ class Item_set
   def restock_item
     sales_item_list
     restock_item_select = gets.to_i
+    i=0
     @drink_jp.each do |key,value|
       i +=1
       if restock_item_select == i
@@ -207,15 +207,15 @@ class VendingMachine < Item_set
 
   def confirm_slot_money
     puts "現在の投入金額:#{@slot_money}円"
-    @drink.each do |key,value|
+    @drink_jp.each do |key,value|
       if @slot_money>=@drink[key] && @drink_stock[key] >0
-        puts "#{key}が購入可能"
+        puts "#{value}が購入可能"
       elsif @slot_money<@drink[key] && @drink_stock[key] >0
-        puts "#{key}は購入不可能[投入金額不足]"
+        puts "#{value}は購入不可能[投入金額不足]"
       elsif @slot_money>=@drink[key] && @drink_stock[key] ==0
-        puts "#{key}は購入不可能[在庫不足]"
+        puts "#{value}は購入不可能[在庫不足]"
       else
-        puts "#{key}は購入不可能"
+        puts "#{value}は購入不可能"
       end
     end
   end
