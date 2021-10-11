@@ -293,7 +293,7 @@ class VendingMachine < Item_set
     # elsif select_drink == 4
     #     return start
     # else
-    #   puts "ボタンを押して下さい"
+    #   puts "ボタンを押して下さいね"
     # end
   # end
 
