@@ -172,7 +172,7 @@ class VendingMachine < Item_set
     # @drink_stock ={cola:5,juice:3,water:2}
     # @drink_jp ={cola:"コーラ",juice:"ジュース",water:"水"}
   end
-
+# test
   def start(config = 0)
     if config == 0
       if @drink.size >0
@@ -189,7 +189,7 @@ class VendingMachine < Item_set
       return
     end
   end
-  
+
   def slot_money(money)
     if MONEY.include?(money) ==false
       puts "投入出来ない金額です。"
