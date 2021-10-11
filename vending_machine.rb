@@ -34,6 +34,7 @@ class Item_set
       collect_sales_money
       return maintenance
     elsif maintenance_select == 5
+      return
     elsif maintenance_select>5 || maintenance_select == 0
       puts "ボタンを押して下さい"
       return maintenance
@@ -136,7 +137,7 @@ class Item_set
       end
     end
   end
-
+# 00
   def restock_item
     sales_item_list
     restock_item_select = gets.to_i
@@ -176,18 +177,19 @@ class VendingMachine < Item_set
     if config == 0
       if @drink.size >0
         run
+        return
       else
         preset
         run
+        return
       end
     else
       maintenance
       run
+      return
     end
   end
-
-
-
+  
   def slot_money(money)
     if MONEY.include?(money) ==false
       puts "投入出来ない金額です。"
