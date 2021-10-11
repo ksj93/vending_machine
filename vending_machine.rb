@@ -34,7 +34,7 @@ class Item_set
       collect_sales_money
       return maintenance
     elsif maintenance_select == 5
-      return
+      return run
     elsif maintenance_select>5 || maintenance_select == 0
       puts "ボタンを押して下さい"
       return maintenance
@@ -63,7 +63,7 @@ class Item_set
       delete_item
       return setting
     elsif setting_select == 3
-      return
+      return maintenance
     elsif setting_select>3 || setting_select == 0
       puts "ボタンを押して下さい"
       return setting
@@ -86,6 +86,7 @@ class Item_set
   end
 
   def delete_item
+    sales_item_list
     puts "1 選択削除"
     puts "2 全部削除"
     puts "3 戻る"
@@ -107,18 +108,28 @@ class Item_set
     end
   end
 
-  def sales_item_list
-    puts "販売中の品物"
-    i=0
-    @drink_jp.each do |key,value|
-      i+=1
-      puts "#{i} #{value}"
+  def sales_item_list(sales_list_argu = 0)
+    if sales_list_argu == 0
+      puts "販売中の品物"
+      i=0
+      puts "-"*15
+      @drink_jp.each do |key,value|
+        i+=1
+        puts "#{i} #{value}"
+      end
+      puts "-"*15
+    else
+      puts "販売中の品物"
+      i=0
+      @drink_jp.each do |key,value|
+        i+=1
+        puts "#{i} #{value} 在庫:#{@drink_stock[key]}"
+      end
+      puts "#{i+1} 戻る"
     end
-    puts "#{i+1} 戻る"
   end
 
   def delete_item_select
-    sales_item_list
     select_del_drink = gets.to_i
     i = 0
     @drink_jp.each do |key,value|
@@ -137,9 +148,9 @@ class Item_set
       end
     end
   end
-# 00
+
   def restock_item
-    sales_item_list
+    sales_item_list("在庫")
     restock_item_select = gets.to_i
     i=0
     @drink_jp.each do |key,value|
@@ -161,6 +172,7 @@ class Item_set
     @total_sales_money +=@sales_money
     @sales_money = 0
     puts "現在の総売り上げ:#{@total_sales_money}円です"
+    return maintenance
   end
 
 end
@@ -168,25 +180,18 @@ end
 class VendingMachine < Item_set
   def initialize
     super
-    # @drink = {cola:150,juice:180,water:100}
-    # @drink_stock ={cola:5,juice:3,water:2}
-    # @drink_jp ={cola:"コーラ",juice:"ジュース",water:"水"}
   end
 # test
   def start(config = 0)
     if config == 0
       if @drink.size >0
         run
-        return
       else
         preset
         run
-        return
       end
     else
       maintenance
-      run
-      return
     end
   end
 
@@ -221,7 +226,6 @@ class VendingMachine < Item_set
       end
     end
   end
-  # 購入不可能の場合、買えない理由を示す条件を追加(211009_kim)
 
   def run
     puts "-"*15
@@ -267,7 +271,6 @@ class VendingMachine < Item_set
     end
     puts "#{i+1}:前に戻る"
   end
-  # buy_item_calculateで選択肢の部分を別のメソッドに分離(211008_kim)
 
   def buy_item_calculate
     buy_item_list
@@ -284,22 +287,6 @@ class VendingMachine < Item_set
       end
     end
   end
-    # if select_drink == 1
-    #   calculate_function(:cola)
-    # elsif select_drink == 2
-    #   calculate_function(:juice)
-    # elsif select_drink == 3
-    #   calculate_function(:water)
-    # elsif select_drink == 4
-    #     return start
-    # else
-    #   puts "ボタンを押して下さい"
-    # end
-  # end
-
-  # 選択に該当する処理が重複したのでkeyという引数を使うcalculate_functionに分離(211008_kim)
-  # 選択の部分をハッシュの繰り返しでiという変数に繰り返しを順序に番号つけて選択した数値と
-  # 一致する時calculate_function(key)を実施するように変更(211009_kim)
 
   def calculate_function(key)
     if @slot_money>=@drink[key] && @drink_stock[key] > 0
