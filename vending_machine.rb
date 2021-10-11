@@ -136,7 +136,7 @@ class Item_set
       end
     end
   end
-
+# 00
   def restock_item
     sales_item_list
     restock_item_select = gets.to_i
