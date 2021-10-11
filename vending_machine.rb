@@ -34,6 +34,7 @@ class Item_set
       collect_sales_money
       return maintenance
     elsif maintenance_select == 5
+      return
     elsif maintenance_select>5 || maintenance_select == 0
       puts "ボタンを押して下さい"
       return maintenance
@@ -176,13 +177,16 @@ class VendingMachine < Item_set
     if config == 0
       if @drink.size >0
         run
+        return
       else
         preset
         run
+        return
       end
     else
       maintenance
       run
+      return
     end
   end
 
