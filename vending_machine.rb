@@ -201,10 +201,10 @@ class VendingMachine < ItemSet
     @drink_jp.each do |key,value|
       if @slot_money>=@drink[key] && @drink_stock[key] >0
         puts "#{value}が購入可能"
-      elsif @slot_money<@drink[key] && @drink_stock[key] >0
-        puts "#{value}[投入金額不足]"
       elsif @slot_money>=@drink[key] && @drink_stock[key] ==0
         puts "#{value}[在庫不足]"
+      elsif @slot_money<@drink[key] && @drink_stock[key] >0
+        puts "#{value}[投入金額不足]"
       else
         puts "#{value}は購入不可能"
       end
@@ -264,7 +264,11 @@ class VendingMachine < ItemSet
       i=0
       @drink_jp.each do |key,value|
         i +=1
-        puts "#{i} #{value}"
+        if @drink_stock[key]>0
+          puts "#{i} #{value}"
+        else
+          puts "#{i} #{value}[売り切れ]"
+        end
       end
     end
 
@@ -290,8 +294,13 @@ class VendingMachine < ItemSet
       @drink_jp.each do |key,value|
         i +=1
         if select_drink == i
-          @drink_stock[key] = @drink_stock[key]  -1
-          puts "#{value}です！"
+          if @drink_stock[key]>0
+            @drink_stock[key] = @drink_stock[key]  -1
+            puts "#{value}です！"
+          else
+            puts "売り切れ"
+            buy_item_calculate(1)
+          end
         elsif select_drink>@drink_jp.size || select_drink == 0
           puts "ボタンを押して下さい"
         end
@@ -335,8 +344,8 @@ class VendingMachine < ItemSet
     end
 
     def free_gift
-      @atari_number = Array.new(3,rand(10))
-      @atari_number << rand(10)
+      @atari_number = Array.new(3,5)
+      @atari_number << 5
       for i in 0..3
         sleep(0.7)
         puts @atari_number[i]
