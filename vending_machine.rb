@@ -178,10 +178,12 @@ class Item_set
 end
 
 class VendingMachine < Item_set
+  # 初期化
   def initialize
     super
   end
-# test
+
+# 実行する
   def start(config = 0)
     if config == 0
       if @drink.size >0
@@ -216,31 +218,31 @@ class VendingMachine < Item_set
     puts "現在の投入金額:#{@slot_money}円"
     @drink_jp.each do |key,value|
       if @slot_money>=@drink[key] && @drink_stock[key] >0
-        puts "#{value}が購入可能"
+        puts "・#{value}が購入可能"
       elsif @slot_money<@drink[key] && @drink_stock[key] >0
-        puts "#{value}は購入不可能[投入金額不足]"
+        puts "・#{value}は購入不可能[投入金額不足]"
       elsif @slot_money>=@drink[key] && @drink_stock[key] ==0
-        puts "#{value}は購入不可能[在庫不足]"
+        puts "・#{value}は購入不可能[在庫不足]"
       else
-        puts "#{value}は購入不可能"
+        puts "・#{value}は購入不可能"
       end
     end
   end
 
   def run
-    puts "-"*15
+    puts "-"*30
     puts "自販機です。"
     puts "行いたい行動に該当する番号を押してください。"
-    puts "-"*15
-    puts "購入可能な飲み物" + ("-"*4)
-    puts "-"*15
+    puts "-"*30
+    puts ("//"*2) + "購入可能な飲み物" + ("//"*2)
+    puts "-"*30
     confirm_slot_money
-    puts "-"*15
+    puts "<"*20
     puts "1 お金を投入する"
     puts "2 飲み物を買う"
     puts "3 在庫＆売上確認"
     puts "4 終わる"
-    puts "-"*15
+    puts ">"*20
     select_menu = gets.to_i
     if select_menu == 1
       puts "投入可能金額:10,50,100,500,1000円"
@@ -295,7 +297,7 @@ class VendingMachine < Item_set
       @sales_money = @sales_money + @drink[key]
       puts "お釣りは#{@slot_money}円です。"
     else
-      puts "購入出来ません！"
+      puts "売り切れ"
     end
   end
 
@@ -304,3 +306,10 @@ class VendingMachine < Item_set
     @slot_money = 0
   end
 end
+
+# 修正案
+# 1.　場所によって、表記を変更しました。:232
+# 2.　「購入できません」　→　「売り切れ」:300
+# 3.　在庫不足　→　「2.飲み物を買う」の所でも、「在庫切れ＝売り切れ」の表記を表示。
+#   　在庫ありの場合となしの場合で、分ける。267行（buy_item_list）クラス？メソッド？puts関係をまとめたい。
+# 4.　1つ1つのメソッドに役割を明記することでさらに理解しやすくする。:181
