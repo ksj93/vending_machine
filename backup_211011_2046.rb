@@ -1,4 +1,4 @@
-class ItemSet
+class Item_set
   MONEY = [10, 50, 100, 500, 1000].freeze
   def initialize
     @total_sales_money = 0
@@ -7,7 +7,6 @@ class ItemSet
     @drink = {}
     @drink_stock ={}
     @drink_jp ={}
-
   end
 
   def maintenance
@@ -24,21 +23,21 @@ class ItemSet
     maintenance_select = gets.to_i
     if maintenance_select == 1
       preset
-      maintenance
+      return maintenance
     elsif maintenance_select == 2
       setting
-      maintenance
+      return maintenance
     elsif maintenance_select == 3
       restock_item
-      maintenance
+      return maintenance
     elsif maintenance_select == 4
       collect_sales_money
-      maintenance
+      return maintenance
     elsif maintenance_select == 5
-
+      return run
     elsif maintenance_select>5 || maintenance_select == 0
       puts "ボタンを押して下さい"
-      maintenance
+      return maintenance
     end
   end
 
@@ -48,28 +47,26 @@ class ItemSet
     @drink_jp ={cola:"コーラ",juice:"ジュース",water:"水"}
   end
 
-  def drink_stock
-    puts "現在の売上金額:#{@sales_money}円"
+  def setting
+    puts "現在の品物"
     @drink_jp.each do |key,value|
       puts "#{value}　在庫:#{@drink_stock[key]} 個　値段:#{@drink[key]} 円"
     end
-  end
-
-  def setting
-    drink_stock
     puts "1 品物の追加"
     puts "2 品物の削除"
     puts "3 終わる"
     setting_select = gets.to_i
     if setting_select == 1
       add_item
+      return setting
     elsif setting_select == 2
       delete_item
+      return setting
     elsif setting_select == 3
-
+      return maintenance
     elsif setting_select>3 || setting_select == 0
       puts "ボタンを押して下さい"
-      setting
+      return setting
     end
 
   end
@@ -89,37 +86,50 @@ class ItemSet
   end
 
   def delete_item
+    sales_item_list
     puts "1 選択削除"
     puts "2 全部削除"
     puts "3 戻る"
     delete_select = gets.to_i
     if delete_select == 1
       delete_item_select
+      return delete_item
     elsif delete_select == 2
       @drink = {}
       @drink_stock ={}
       @drink_jp ={}
       puts "全ての品物が販売中止"
+      return delete_item
     elsif delete_select == 3
-
-    elsif delete_select > 3 || delete_select == 0
+      return setting
+    elsif select_menu_num>3 || select_menu_num == 0
       puts "誤った入力です"
-      delete_item
+      return delete_item
     end
   end
 
-  def sales_item_list
-    puts "販売中の品物"
-    i=0
-    @drink_jp.each do |key,value|
-      i+=1
-      puts "#{i} #{value}"
+  def sales_item_list(sales_list_argu = 0)
+    if sales_list_argu == 0
+      puts "販売中の品物"
+      i=0
+      puts "-"*15
+      @drink_jp.each do |key,value|
+        i+=1
+        puts "#{i} #{value}"
+      end
+      puts "-"*15
+    else
+      puts "販売中の品物"
+      i=0
+      @drink_jp.each do |key,value|
+        i+=1
+        puts "#{i} #{value} 在庫:#{@drink_stock[key]}"
+      end
+      puts "#{i+1} 戻る"
     end
-    puts "#{i+1} 戻る"
   end
 
   def delete_item_select
-    sales_item_list
     select_del_drink = gets.to_i
     i = 0
     @drink_jp.each do |key,value|
@@ -129,18 +139,18 @@ class ItemSet
         @drink_jp.delete(key)
         @drink_stock.delete(key)
         puts "#{value}は販売中止"
-        delete_item
+        return delete_item
       elsif select_del_drink == @drink_jp.size+1
-        delete_item
+        return delete_item
       elsif select_del_drink > @drink_jp.size+1 || select_del_drink == 0
         puts "ボタンを押して下さい"
-
+        return
       end
     end
   end
 
   def restock_item
-    sales_item_list
+    sales_item_list("在庫")
     restock_item_select = gets.to_i
     i=0
     @drink_jp.each do |key,value|
@@ -148,12 +158,12 @@ class ItemSet
       if restock_item_select == i
         stock_drink_num = gets.to_i
         @drink_stock[key] += stock_drink_num
-        restock_item
+        return restock_item
       elsif restock_item_select == @drink_jp.size+1
-
-      elsif restock_item_select > @drink_jp.size+1 || restock_item_select == 0
+        return maintenance
+      elsif restock_item_select>@drink_jp.size+1 || restock_item_select == 0
         puts "ボタンを押して下さい"
-        restock_item
+        return
       end
     end
   end
@@ -162,16 +172,16 @@ class ItemSet
     @total_sales_money +=@sales_money
     @sales_money = 0
     puts "現在の総売り上げ:#{@total_sales_money}円です"
+    return maintenance
   end
 
 end
 
-class VendingMachine < ItemSet
+class VendingMachine < Item_set
   def initialize
     super
-    @atari_number =[]
   end
-
+# test
   def start(config = 0)
     if config == 0
       if @drink.size >0
@@ -182,7 +192,6 @@ class VendingMachine < ItemSet
       end
     else
       maintenance
-      run
     end
   end
 
@@ -196,21 +205,27 @@ class VendingMachine < ItemSet
     end
   end
 
+  def drink_stock
+    puts "現在の売上金額:#{@sales_money}円"
+    @drink_jp.each do |key,value|
+      puts "#{value}　在庫:#{@drink_stock[key]} 個　値段:#{@drink[key]} 円"
+    end
+  end
+
   def confirm_slot_money
     puts "現在の投入金額:#{@slot_money}円"
     @drink_jp.each do |key,value|
       if @slot_money>=@drink[key] && @drink_stock[key] >0
         puts "#{value}が購入可能"
       elsif @slot_money<@drink[key] && @drink_stock[key] >0
-        puts "#{value}[投入金額不足]"
+        puts "#{value}は購入不可能[投入金額不足]"
       elsif @slot_money>=@drink[key] && @drink_stock[key] ==0
-        puts "#{value}[在庫不足]"
+        puts "#{value}は購入不可能[在庫不足]"
       else
         puts "#{value}は購入不可能"
       end
     end
   end
-
 
   def run
     puts "-"*15
@@ -231,70 +246,44 @@ class VendingMachine < ItemSet
       puts "投入可能金額:10,50,100,500,1000円"
       insert_coin = gets.to_i
       slot_money(insert_coin)
-      run
+      return run
     elsif select_menu == 2
-      buy_item_calculate(0)
-      run
+      buy_item_calculate
+      return run
     elsif select_menu == 3
       drink_stock
-      run
+      return run
     elsif select_menu == 4
       return_money
       puts "次も利用してください！"
     else
       puts "番号を押してください！"
-      run
+      return run
     end
   end
 
-  def buy_item_list(buy_or_free = 0)
-    if buy_or_free == 0
-      i=0
-      puts "現在の投入金額:#{@slot_money}円"
-      @drink_jp.each do |key,value|
-        i +=1
-        if @drink_stock[key]>0
-          puts "#{i} #{value}　値段:#{@drink[key]} 円"
-        else
-          puts "#{i} #{value}　[売り切れ]"
-        end
-      end
-      puts "#{i+1}:前に戻る"
-    else
-      i=0
-      @drink_jp.each do |key,value|
-        i +=1
-        puts "#{i} #{value}"
-      end
+  def buy_item_list
+    i=0
+    puts "現在の投入金額:#{@slot_money}円"
+    @drink_jp.each do |key,value|
+      i +=1
+      puts "#{i} #{value}　値段:#{@drink[key]} 円"
     end
-
+    puts "#{i+1}:前に戻る"
   end
 
-  def buy_item_calculate(buy_or_nonbuy = 0)
-    if buy_or_nonbuy == 0
-      buy_item_list
-      select_drink = gets.to_i
-      i = 0
-      @drink_jp.each do |key,value|
-        i +=1
-        if select_drink == i
-          calculate_function(key)
-        elsif select_drink>@drink_jp.size+1 || select_drink == 0
-          puts "ボタンを押して下さい"
-        end
-      end
-    else
-      buy_item_list(1)
-      select_drink = gets.to_i
-      i = 0
-      @drink_jp.each do |key,value|
-        i +=1
-        if select_drink == i
-          @drink_stock[key] = @drink_stock[key]  -1
-          puts "#{value}です！"
-        elsif select_drink>@drink_jp.size || select_drink == 0
-          puts "ボタンを押して下さい"
-        end
+  def buy_item_calculate
+    buy_item_list
+    select_drink = gets.to_i
+    i = 0
+    @drink_jp.each do |key,value|
+      i +=1
+      if select_drink == i
+        calculate_function(key)
+        puts "#{value}です！"
+      elsif select_drink>@drink_jp.size+1 || select_drink == 0
+        puts "ボタンを押して下さい"
+        return
       end
     end
   end
@@ -304,13 +293,9 @@ class VendingMachine < ItemSet
       @slot_money=@slot_money-@drink[key]
       @drink_stock[key] = @drink_stock[key]  -1
       @sales_money = @sales_money + @drink[key]
-      puts "#{@drink_jp[key]}です！"
       puts "お釣りは#{@slot_money}円です。"
-      win_game
-    elsif @drink_stock[key] == 0
-      puts "売り切れ"
-    elsif @slot_money < @drink[key]
-      puts "お金が足りません"
+    else
+      puts "購入出来ません！"
     end
   end
 
@@ -318,32 +303,4 @@ class VendingMachine < ItemSet
     puts "#{@slot_money}円を返します。"
     @slot_money = 0
   end
-
-  private
-
-    def win_game
-      puts "ルーレット始まります"
-      free_gift
-      if @atari_number.uniq.size == 1
-        puts "当たり、飲み物を選んでください"
-        buy_item_calculate(1)
-        @atari_number = []
-      else
-        puts "残念！次の機会に…"
-        @atari_number = []
-      end
-    end
-
-    def free_gift
-      @atari_number = Array.new(3,rand(10))
-      @atari_number << rand(10)
-      for i in 0..3
-        sleep(0.7)
-        puts @atari_number[i]
-      end
-      sleep(0.3)
-      number_display = @atari_number.clone
-      p number_display.join
-    end
-
 end
