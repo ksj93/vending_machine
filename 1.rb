@@ -1,4 +1,0 @@
-ootsukadesu
-yoshidadesu.
-
-fjsdfkajslfjkladsjfkljaskljfkjdsakjfklasjdklfjksdajfjkdljk
