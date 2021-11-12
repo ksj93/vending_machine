@@ -11,16 +11,16 @@ class ItemSet
   end
 
   def maintenance
-    puts "-"*15
+    puts "-----------------------------------------"
     puts "管理モード"
     puts "現在総売上金額:#{@total_sales_money}円"
-    puts "-"*15
+    puts "-----------------------------------------"
     puts "1 プリセット"
     puts "2 品物の追加・除去"
     puts "3 在庫追加"
     puts "4 売上金額回収"
     puts "5 終わる"
-    puts "-"*15
+    puts "-----------------------------------------"
     maintenance_select = gets.to_i
     if maintenance_select == 1
       preset
