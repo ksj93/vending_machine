@@ -1,5 +1,8 @@
 require './item_setting'
 
+def
+end
+
 class VendingMachine < ItemSet
   def initialize
     super
