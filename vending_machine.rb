@@ -54,12 +54,12 @@ class VendingMachine < ItemSet
     puts "購入可能な飲み物" + ("-"*4)
     puts "-"*15
     confirm_slot_money
-    puts "-"*15
+    puts "//////////////////////////////"
     puts "1 お金を投入する"
     puts "2 飲み物を買う"
     puts "3 在庫＆売上確認"
     puts "4 終わる"
-    puts "-"*15
+    puts "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
     select_menu = gets.to_i
     if select_menu == 1
       puts "投入可能金額:10,50,100,500,1000円"
